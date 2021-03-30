@@ -6,9 +6,11 @@ import { TransactionList } from './components/TransactionList';
 import AddTransaction from './components/AddTransaction';
 import { Component } from 'react';
 import firebase from './firebase';
+import Spinner from './components/UI/Spinner';
 
 class App extends Component {
   state = {
+    isLoaded: false,
     transactions: []
   }
 
@@ -45,25 +47,32 @@ class App extends Component {
       console.log('starts here')
       console.log(newTransactions)
       this.setState({
+        isLoaded: true,
         transactions: newTransactions
       });
       // console.log(this.state.transactions)
     })
   }
   render() {
-    return (
-      <div className="App">
-        <Header />
-        <div className="container">
-          <Balance transactions={this.state.transactions} />
-          <IncomeExpenses transactions={this.state.transactions} />
-          <TransactionList transactions={this.state.transactions} deleteTransaction={this.deleteTransaction} />
-          <AddTransaction
-            transactions={this.state.transactions}
-            addTransaction={this.addTransaction} />
+    let isLoaded = this.state.isLoaded;
+    if (!isLoaded) {
+      return <Spinner />
+    } else {
+      return (
+        <div className="App">
+          <Header />
+          <div className="container">
+            <Balance transactions={this.state.transactions} />
+            <IncomeExpenses transactions={this.state.transactions} />
+            <TransactionList transactions={this.state.transactions} deleteTransaction={this.deleteTransaction} />
+            <AddTransaction
+              transactions={this.state.transactions}
+              addTransaction={this.addTransaction} />
+          </div>
         </div>
-      </div>
-    );
+      );
+    }
+
   }
 
 }
